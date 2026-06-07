@@ -9,15 +9,17 @@ Works by listening to the discord-ipc-0 socket (only supported path is currently
 ```sh
 git clone https://github.com/GiveMeTheButter/fluxer-rpc-reader-linux.git
 ```
-2. Create a python venv somewhere (preferably in the cloned directory)
+2. Inside the cloned directory, add a file named "token.txt" and put your Fluxer token in it
+
+3. Create a python venv somewhere (preferably in the cloned directory)
 ```sh
 python -m venv venv
 ```
-3. Install aiohttp via pip
+4. Install aiohttp via pip
 ```sh
 venv/path/to/pip install aiohttp
 ```
-4. Run main.py with python inside the root of the cloned directory
+5. Run main.py with python inside the root of the cloned directory
 ```sh
 venv/path/to/python main.py
 ```
