@@ -79,8 +79,6 @@ def startListening():
             decodedData = identifyJson(decodedData)
             decodedData = decodedData.encode("Latin-1")
             decodedData = decodedData.decode("UTF-8")
-            #print("")
-            #print(decodedData)
             jsonData = json.loads(decodedData)
             if jsonData.get("cmd") == "SET_ACTIVITY":
                 pid = jsonData.get("args").get("pid")
@@ -93,7 +91,6 @@ def startListening():
                 else:
                     state = "None"
                 asyncio.run(patch.test('"gaming ' + name + ' - ' + str(state) + '"','"🎮"'))
-                #print(jsonData)
                 print(name + " - " + str(state))
     asyncio.run(patch.test('null','null'))
     print("Disconnected")
