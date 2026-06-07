@@ -1,0 +1,14 @@
+# venv and python
+venv/
+__pycache__
+
+# token
+token.txt
+
+# test
+test.py
+test4.py
+
+# bash scripts
+setupenv.sh
+start.sh
