@@ -6,8 +6,11 @@ import patch
 import asyncio
 import subprocess
 import processjson
-
+import sys
 # add other paths later!!!
+
+if sys.platform == "win32":
+    raise ValueError("Windows is not currently supported")
 ipcPath = str(os.environ.get("XDG_RUNTIME_DIR")) + "/" + "discord-ipc-0"
 print("Path: " + ipcPath)
 
