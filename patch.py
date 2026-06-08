@@ -1,8 +1,9 @@
 import aiohttp
 import json
+import re
 
 file = open("token.txt", "r")
-token = str(file.read())
+token = re.sub(r'[\r\n\x00]', '', str(file.read()))
 
 async def setStatus(j:dict):
     async with aiohttp.ClientSession("https://api.fluxer.app/v1/", headers={"Authorization": token}) as session:
