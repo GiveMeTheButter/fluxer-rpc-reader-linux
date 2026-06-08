@@ -52,6 +52,7 @@ def generateStatus(j:dict):
                 text = text + " - " + j.get("args").get("activity").get("state")
             if j.get("args").get("activity").get("details") != None:
                 text = text + ", " + j.get("args").get("activity").get("details")
+            text = text[:maxTextLength+1]
             text = text + '"'
-    print('{"custom_status":{"text":' + text[:maxTextLength] + ',"emoji_name":' + emoji_name + ',"emoji_animated":' + emoji_animated + '}}')
+    print('{"custom_status":{"text":' + text + ',"emoji_name":' + emoji_name + ',"emoji_animated":' + emoji_animated + '}}')
     return json.loads('{"custom_status":{"text":' + text + ',"emoji_name":' + emoji_name + ',"emoji_animated":' + emoji_animated + '}}')

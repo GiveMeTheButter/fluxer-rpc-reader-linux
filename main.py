@@ -60,7 +60,7 @@ def startListening():
                 break
             asyncio.run(patch.setStatus(processjson.generateStatus(jsonData)))
     asyncio.run(patch.test('null','null'))
-    print("Disconnected")
+    print("Disconnected, setting status to null.")
     soc.close()
 try:
     while True:
