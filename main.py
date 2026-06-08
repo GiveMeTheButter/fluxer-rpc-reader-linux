@@ -5,36 +5,11 @@ import struct
 import patch
 import asyncio
 import subprocess
+import processjson
 
+# add other paths later!!!
 ipcPath = str(os.environ.get("XDG_RUNTIME_DIR")) + "/" + "discord-ipc-0"
 print("Path: " + ipcPath)
-
-def identifyJson(json):
-    a = 0
-    f = 1
-    found = False
-    z = 0
-    for x in json:
-        #print(str(f) + " " + x)
-        
-        if found == False:
-            if x == "{":
-                found = True
-                z = a + 1
-            else:
-                a = a + 1
-        else:
-            if x == "}":
-                f = f - 1
-            if x == "{":
-                f = f + 1
-            z = z + 1
-            if f == 0:
-                #print(str(len(json)))
-                #print("a: "+str(a)+" z: "+str(z))
-                jsone = json[a:]
-                jsone = jsone[:z]
-                return jsone
 
 def respondHandshake(connection):
     payload = {
@@ -75,26 +50,21 @@ def startListening():
             if test == 0:
                 respondHandshake(conn)
                 test = test + 1
-            decodedData = data.decode("Latin-1",errors="replace")
-            decodedData = identifyJson(decodedData)
+            decodedData = data.decode("Latin-1")
+            decodedData = processjson.identifyJson(decodedData)
             decodedData = decodedData.encode("Latin-1")
             decodedData = decodedData.decode("UTF-8")
-            jsonData = json.loads(decodedData)
-            if jsonData.get("cmd") == "SET_ACTIVITY":
-                pid = jsonData.get("args").get("pid")
-                command = subprocess.Popen(["ps", "-p", str(pid), "-o", "comm="], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                stdout, _ = command.communicate()
-                name = stdout.strip()
-                state = jsonData.get("args").get("activity")
-                if state != None:
-                    state = state.get("state")
-                else:
-                    state = "None"
-                asyncio.run(patch.test('"gaming ' + name + ' - ' + str(state) + '"','"🎮"'))
-                print(name + " - " + str(state))
+            try:
+                jsonData = json.loads(decodedData)
+            except json.JSONDecodeError as e:
+                break
+            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData)))
     asyncio.run(patch.test('null','null'))
     print("Disconnected")
     soc.close()
-
-while True:
-    startListening()
+try:
+    while True:
+        startListening()
+except KeyboardInterrupt:
+    print("KeyboardInterrupt catched, setting custom status to null.")
+    asyncio.run(patch.test('null','null'))
