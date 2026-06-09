@@ -1,6 +1,11 @@
 import json
 import subprocess
 
+try:
+    with open("clientids.json", "r") as file:
+        clientids = json.load(file)
+except:
+    print("Something went wrong when reading clientids.json, does the file exist and is its content correct?")
 maxTextLength = 128
 
 def pidToName(pid):
@@ -31,7 +36,7 @@ def identifyJson(json):
                 jsone = jsone[:z]
                 return jsone
 
-def generateStatus(j:dict):
+def generateStatus(j:dict, cid:str):
     text = ""
     emoji_name = ""
     emoji_animated = "false"
@@ -46,7 +51,10 @@ def generateStatus(j:dict):
             text = "null"
             emoji_name = "null"
         else:
-            text = '"gaming ' + str(pidToName(j.get("args").get("pid")))
+            if cid != None and clientids.get(cid) != None:
+                text = '"gaming ' + clientids.get(cid)
+            else:
+                text = '"gaming ' + str(pidToName(j.get("args").get("pid")))
             emoji_name = '"🎮"'
             if j.get("args").get("activity").get("state") != None:
                 text = text + " - " + j.get("args").get("activity").get("state")

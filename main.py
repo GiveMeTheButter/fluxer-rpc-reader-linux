@@ -42,7 +42,7 @@ def startListening():
     asyncio.run(patch.test('null','null'))
 
     conn, addr = soc.accept()
-    test = 0
+    cid = None
 
     print("Connected with " + str(conn))
     with conn:
@@ -50,9 +50,6 @@ def startListening():
             data = conn.recv(2048)
             if not data:
                 break
-            if test == 0:
-                respondHandshake(conn)
-                test = test + 1
             decodedData = data.decode("Latin-1")
             decodedData = processjson.identifyJson(decodedData)
             decodedData = decodedData.encode("Latin-1")
@@ -65,7 +62,10 @@ def startListening():
                 jsonData = json.loads(decodedData)
             except json.JSONDecodeError as e:
                 break
-            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData)))
+            if jsonData.get("v") != None and jsonData.get("client_id") != None:
+                cid = jsonData.get("client_id")
+                respondHandshake(conn)
+            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid)))
     asyncio.run(patch.test('null','null'))
     print("Disconnected, setting status to null.")
     soc.close()
