@@ -56,7 +56,11 @@ def startListening():
             decodedData = data.decode("Latin-1")
             decodedData = processjson.identifyJson(decodedData)
             decodedData = decodedData.encode("Latin-1")
-            decodedData = decodedData.decode("UTF-8")
+            try:
+                decodedData = decodedData.decode("UTF-8")
+            except UnicodeDecodeError:
+                print("Couldn't decode this string: " + decodedData)
+                break
             try:
                 jsonData = json.loads(decodedData)
             except json.JSONDecodeError as e:
