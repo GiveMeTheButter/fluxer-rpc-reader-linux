@@ -33,10 +33,15 @@ def startListening():
         soc.bind((ipcPath))
 
     except socket.error as message:
-        print("Failed to bind. Code: "
-        + str(message.errno) + ", Msg: "
-        + message.strerror
-        )
+        try:
+            print("Trying to remove and recreate " + str(ipcPath))
+            os.remove(ipcPath)
+            soc.bind((ipcPath))
+        except:   
+            print("Failed to bind. Code: "
+            + str(message.errno) + ", Msg: "
+            + message.strerror
+            )
 
     soc.listen()
     asyncio.run(patch.test('null','null'))
@@ -56,7 +61,7 @@ def startListening():
             try:
                 decodedData = decodedData.decode("UTF-8")
             except UnicodeDecodeError:
-                print("Couldn't decode this string: " + decodedData)
+                print("Couldn't decode this string: " + str(decodedData))
                 break
             try:
                 jsonData = json.loads(decodedData)
