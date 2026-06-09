@@ -4,6 +4,8 @@ Shows (most?) Discord RPC apps on your status!
 
 Works by listening to the discord-ipc-0 socket (only supported path is currently $XDG_RUNTIME_DIR/discord-ipc-0!) and using the recieved json to create a status which is set through the Fluxer API.
 
+You can theoretically customize the names of apps by adding their client_id and the name you want in "clientids.json"
+
 # Setup
 ## Latest Release
 1. Download the binary
