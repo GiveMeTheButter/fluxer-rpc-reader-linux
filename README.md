@@ -5,15 +5,14 @@ Shows (most?) Discord RPC apps on your status!
 Works by listening to the discord-ipc-0 socket (only supported path is currently $XDG_RUNTIME_DIR/discord-ipc-0!) and using the recieved json to create a status which is set through the Fluxer API.
 
 You can theoretically customize the names of apps by adding their client_id and the name you want in "clientids.json"
-Some apps may crash!
+Some apps may crash (turn RPC off in their settings if you can, an example is Sober)!
 
 # Setup
 ## Latest Release
-1. Download the binary
-2. Put the binary in its own directory (optional)
-3. Create "token.txt" inside of the directory where the binary resides in
-4. Put your Fluxer token inside of "token.txt"
-5. Run the binary!
+1. Download the latest release
+2. Unzip the file
+3. Put your Fluxer token inside of "token.txt" inside of the directory you extracted
+4. Run "run.sh"
 ## Latest Commit
 1. Clone the repo somewhere
 ```sh
