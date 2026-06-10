@@ -1,5 +1,5 @@
 # What is this?
-It's a very unfinished Discord RPC thing for Fluxer on Linux.
+It's a (almost finished, but working) Discord RPC thing for Fluxer on Linux.
 Shows (most?) Discord RPC apps on your status!
 
 Works by listening to the discord-ipc-0 socket (only supported path is currently $XDG_RUNTIME_DIR/discord-ipc-0!) and using the recieved json to create a status which is set through the Fluxer API.
