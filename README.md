@@ -33,4 +33,4 @@ venv/path/to/pip install aiohttp
 venv/path/to/python main.py
 ```
 #
-One thing that is important to note is that you likely have to remove discord-ipc-0 before using this. This will also very likely not work while Discord is open.
+It will very likely not work while Discord is open.
