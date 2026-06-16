@@ -36,7 +36,8 @@ def identifyJson(json):
                 jsone = jsone[:z]
                 return jsone
 
-def generateStatus(j:dict, cid:str):
+def generateStatus(j:dict, cid:str, seconds):
+    seconds = seconds
     text = ""
     emoji_name = ""
     emoji_animated = "false"
@@ -60,6 +61,13 @@ def generateStatus(j:dict, cid:str):
                 text = text + " - " + j.get("args").get("activity").get("state")
             if j.get("args").get("activity").get("details") != None:
                 text = text + ", " + j.get("args").get("activity").get("details")
+            if seconds != None:
+                m,s = divmod(seconds,60)
+                if len(str(s)) == 1:
+                    s = "0"+str(s)
+                time = f"{m}:{s}"
+                text = text[:maxTextLength-len(time)]
+                text = text + " " + time
             text = text[:maxTextLength+1]
             text = text + '"'
     print('{"custom_status":{"text":' + text + ',"emoji_name":' + emoji_name + ',"emoji_animated":' + emoji_animated + '}}')

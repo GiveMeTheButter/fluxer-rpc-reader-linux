@@ -7,6 +7,8 @@ import asyncio
 import subprocess
 import processjson
 import sys
+import timer
+import threading
 # add other paths later!!!
 
 if sys.platform == "win32":
@@ -50,6 +52,10 @@ def startListening():
     cid = None
 
     print("Connected with " + str(conn))
+    timah = timer.Timer()
+    thread = threading.Thread(target=timah.timeLoop)
+    thread.daemon = True
+    thread.start()
     with conn:
         while True:
             data = conn.recv(2048)
@@ -70,8 +76,13 @@ def startListening():
             if jsonData.get("v") != None and jsonData.get("client_id") != None:
                 cid = jsonData.get("client_id")
                 respondHandshake(conn)
-            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid)))
+            if jsonData.get("args") != None:
+                if jsonData.get("args").get("activity") != None:
+                    timah.setCurrentJsonAndCid(jsonData,cid)
+            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid, timah.getSeconds())))
     asyncio.run(patch.test('null','null'))
+    timah.stop()
+    del timah
     print("Disconnected, setting status to null.")
     soc.close()
 try:
