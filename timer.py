@@ -28,7 +28,9 @@ class Timer:
         self.currentTime = timee
 
     def setCurrentJsonAndCid(self,j:dict,cid):
-        self.currentTime = j.get("args").get("activity").get("timestamps").get("start")
+        self.currentTime = None
+        if j.get("args").get("activity").get("timestamps") != None:
+            self.currentTime = j.get("args").get("activity").get("timestamps").get("start")
         self._currentJson = j
         self._cid = cid
 
