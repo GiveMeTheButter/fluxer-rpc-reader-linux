@@ -53,10 +53,10 @@ def generateStatus(j:dict, cid:str, seconds):
             emoji_name = "null"
         else:
             if cid != None and clientids.get(cid) != None:
-                text = '"gaming ' + clientids.get(cid)
+                text = 'gaming ' + clientids.get(cid)
             else:
-                text = '"gaming ' + str(pidToName(j.get("args").get("pid")))
-            emoji_name = '"🎮"'
+                text = 'gaming ' + str(pidToName(j.get("args").get("pid")))
+            emoji_name = '🎮'
             if j.get("args").get("activity").get("state") != None:
                 text = text + " - " + j.get("args").get("activity").get("state")
             if j.get("args").get("activity").get("details") != None:
@@ -68,7 +68,10 @@ def generateStatus(j:dict, cid:str, seconds):
                 time = f"{m}:{s}"
                 text = text[:maxTextLength-len(time)]
                 text = text + " " + time
-            text = text[:maxTextLength+1]
-            text = text + '"'
-    print('{"custom_status":{"text":' + text + ',"emoji_name":' + emoji_name + ',"emoji_animated":' + emoji_animated + '}}')
-    return json.loads('{"custom_status":{"text":' + text + ',"emoji_name":' + emoji_name + ',"emoji_animated":' + emoji_animated + '}}')
+            text = text[:maxTextLength]
+    jsone = json.loads('{"custom_status":{"text":"","emoji_name":null,"emoji_animated":' + emoji_animated + '}}')
+    jsone.get("custom_status")["text"] = text
+    jsone.get("custom_status")["emoji_name"] = emoji_name
+    jsone.get("custom_status")["emoji_animated"] = emoji_animated
+    print(jsone)
+    return jsone
