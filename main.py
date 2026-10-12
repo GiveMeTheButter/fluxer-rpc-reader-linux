@@ -9,6 +9,9 @@ import processjson
 import sys
 import timer
 import threading
+from PySide6.QtWidgets import QSystemTrayIcon, QMenu, QApplication
+from PySide6.QtGui import QIcon, QAction
+import rpcreader
 # add other paths later!!!
 
 if sys.platform == "win32":
@@ -16,78 +19,36 @@ if sys.platform == "win32":
 ipcPath = str(os.environ.get("XDG_RUNTIME_DIR")) + "/" + "discord-ipc-0"
 print("Path: " + ipcPath)
 
-def respondHandshake(connection):
-    payload = {
-                    "cmd": "DISPATCH",
-                    "evt": "READY",
-                    "code": "4000"
-                }
-    payload = json.dumps(payload).encode("UTF-8")
-    payload = struct.pack("<ii", 1, len(payload)) + payload
-    connection.send(payload)
+app = QApplication()
+QApplication.setQuitOnLastWindowClosed(False)
 
-def startListening():
-    soc = socket.socket(socket.AF_UNIX)
+tray = QSystemTrayIcon()
+tray.setIcon(QIcon("saul.jpg"))
+menu = QMenu()
 
-    try:
-        if os.path.exists(ipcPath):
-            os.unlink(ipcPath)
-        soc.bind((ipcPath))
+tray.show()
 
-    except socket.error as message:
-        try:
-            print("Trying to remove and recreate " + str(ipcPath))
-            os.remove(ipcPath)
-            soc.bind((ipcPath))
-        except:   
-            print("Failed to bind. Code: "
-            + str(message.errno) + ", Msg: "
-            + message.strerror
-            )
+action = QAction("Exit")
 
-    soc.listen()
-    asyncio.run(patch.test('null','null'))
+def exitApp():
+    rpcreader.setStatusNull()
+    print("Exiting app... setting custom status to null.")
+    app.quit()
+action.triggered.connect(exitApp)
 
-    conn, addr = soc.accept()
-    cid = None
+menu = QMenu()
+menu.addAction(action)
+tray.setContextMenu(menu)
 
-    print("Connected with " + str(conn))
-    timah = timer.Timer()
-    thread = threading.Thread(target=timah.timeLoop)
-    thread.daemon = True
-    thread.start()
-    with conn:
-        while True:
-            data = conn.recv(2048)
-            if not data:
-                break
-            decodedData = data.decode("Latin-1")
-            decodedData = processjson.identifyJson(decodedData)
-            decodedData = decodedData.encode("Latin-1")
-            try:
-                decodedData = decodedData.decode("UTF-8")
-            except UnicodeDecodeError:
-                print("Couldn't decode this string: " + str(decodedData))
-                break
-            try:
-                jsonData = json.loads(decodedData)
-            except json.JSONDecodeError as e:
-                break
-            if jsonData.get("v") != None and jsonData.get("client_id") != None:
-                cid = jsonData.get("client_id")
-                respondHandshake(conn)
-            if jsonData.get("args") != None:
-                if jsonData.get("args").get("activity") != None:
-                    timah.setCurrentJsonAndCid(jsonData,cid)
-            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid, timah.getSeconds())))
-    asyncio.run(patch.test('null','null'))
-    timah.stop()
-    del timah
-    print("Disconnected, setting status to null.")
-    soc.close()
+tray.show()
+
 try:
-    while True:
-        startListening()
+    thread3 = threading.Thread(target=rpcreader.startListening, args=(ipcPath,))
+    thread3.daemon = True
+    thread3.start()
+    sys.exit(app.exec())
+    #while thread3.:
+     #   thread3.start()
 except KeyboardInterrupt:
-    print("KeyboardInterrupt catched, setting custom status to null.")
-    asyncio.run(patch.test('null','null'))
+    print("KeyboardInterrupt caught, setting custom status to null.")
+    rpcreader.setStatusNull()
