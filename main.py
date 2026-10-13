@@ -25,15 +25,21 @@ if getattr(sys, "frozen", False):
 else:
     tokenPath = Path.joinpath(Path(__file__).resolve().parent, "token.txt")
 
+warn = False
+if tokenPath.exists() != True:
+    print("token.txt doesn't exist! Created token.txt for you :)")
+    tokenFile = open(tokenPath, "w")
+    tokenFile.close()
+    warn = True
+
 app = QApplication()
 dialog = QInputDialog()
 QApplication.setQuitOnLastWindowClosed(False)
 
 tray = QSystemTrayIcon()
 tray.setIcon(QIcon("saul.jpg"))
+tray.setToolTip("Fluxer RPC")
 menu = QMenu()
-dialog.setLabelText("Input Token here")
-tray.show()
 
 action = QAction("Exit")
 action2 = QAction("Change Token")
