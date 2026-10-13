@@ -20,11 +20,11 @@ if sys.platform == "win32":
 ipcPath = str(os.environ.get("XDG_RUNTIME_DIR")) + "/" + "discord-ipc-0"
 print("Path: " + ipcPath)
 
-if getattr(sys, "frozen", False):
-    tokenPath = Path("token.txt")
-else:
-    tokenPath = Path.joinpath(Path(__file__).resolve().parent, "token.txt")
-
+try:
+    iconPath = os.path.join(sys._MEIPASS,"ico.svg")
+except:
+    iconPath = Path("ico.svg")
+tokenPath = Path("token.txt")
 warn = False
 if tokenPath.exists() != True:
     print("token.txt doesn't exist! Created token.txt for you :)")
@@ -37,7 +37,7 @@ dialog = QInputDialog()
 QApplication.setQuitOnLastWindowClosed(False)
 
 tray = QSystemTrayIcon()
-tray.setIcon(QIcon("saul.jpg"))
+tray.setIcon(QIcon(os.path.join(iconPath)))
 tray.setToolTip("Fluxer RPC")
 menu = QMenu()
 
@@ -70,6 +70,8 @@ try:
     thread3 = threading.Thread(target=rpcreader.startListening, args=(ipcPath,))
     thread3.daemon = True
     thread3.start()
+    if(warn):
+        tokenWindow()
     sys.exit(app.exec())
     #while thread3.:
      #   thread3.start()

@@ -1,8 +1,16 @@
 import json
 import subprocess
+from pathlib import Path
+
+clientidPath = Path("clientids.json")
+
+if clientidPath.exists() != True:
+    print("clientids.json doesn't exist! Created clientids.json for you :)")
+    clientidFile = open(clientidPath, "w")
+    clientidFile.close()
 
 try:
-    with open("clientids.json", "r") as file:
+    with open(clientidPath, "r") as file:
         clientids = json.load(file)
 except:
     print("Something went wrong when reading clientids.json, does the file exist and is its content correct?")

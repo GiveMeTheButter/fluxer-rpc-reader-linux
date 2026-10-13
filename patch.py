@@ -3,10 +3,10 @@ import json
 import re
 import sys
 from pathlib import Path
-if getattr(sys, "frozen", False):
-    rootDir = Path("token.txt")
-else:
-    rootDir = Path.joinpath(Path(__file__).resolve().parent, "token.txt")
+#if getattr(sys, "frozen", False):
+rootDir = Path("token.txt")
+#else:
+#    rootDir = Path.joinpath(Path(__file__).resolve().parent, "token.txt")
 
 def getToken():
     file = open(rootDir, "r")
