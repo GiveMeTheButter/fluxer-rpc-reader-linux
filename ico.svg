@@ -10,6 +10,9 @@
    id="svg2"
    sodipodi:docname="ico.svg"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   inkscape:export-filename="ico.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +36,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="0.40884963"
-     inkscape:cx="-103.9502"
+     inkscape:cx="-105.17314"
      inkscape:cy="17.121209"
      inkscape:window-width="1876"
      inkscape:window-height="993"
@@ -45,23 +48,10 @@
      fill="#4641D9"
      d="M512 256C512 114.615 397.385 0 256 0S0 114.615 0 256s114.615 256 256 256 256-114.615 256-256Z"
      id="path1" />
-  <text
-     xml:space="preserve"
-     id="text3"
-     style="fill:#000000;text-orientation:auto;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect3)" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:200px;font-family:'Radio Canada Big';-inkscape-font-specification:'Radio Canada Big';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffffff;fill-opacity:1"
-     x="251.92007"
-     y="60.456284"
-     id="text1"><tspan
-       sodipodi:role="line"
-       id="tspan1"
-       x="251.92007"
-       y="60.456284" /><tspan
-       sodipodi:role="line"
-       x="251.92007"
-       y="334.20016"
-       id="tspan2"
-       style="font-size:226.667px">RPC</tspan></text>
+  <path
+     style="font-size:226.667px;font-family:'Radio Canada Big';-inkscape-font-specification:'Radio Canada Big';text-align:center;text-anchor:middle;fill:#ffffff"
+     d="m 65.033108,275.26674 v -21.76003 h 43.973402 q 16.77336,0 24.93337,-6.57334 8.16001,-6.80001 8.16001,-20.40003 0,-13.60002 -8.16001,-20.17337 -8.16001,-6.80001 -24.93337,-6.80001 H 65.033108 v -21.76003 h 46.240072 q 25.16004,0 40.34672,12.92002 15.18669,12.92002 15.18669,35.81339 0,22.6667 -15.18669,35.81338 -15.18668,12.92002 -40.34672,12.92002 z M 53.699757,334.20016 V 177.79993 h 23.800036 v 156.40023 z m 88.626803,0 -42.386733,-67.77343 h 26.066703 l 44.20007,67.77343 z m 63.01331,-54.40008 v -21.76003 h 43.9734 q 18.13336,0 26.74671,-7.25334 8.61334,-7.48002 8.61334,-21.9867 0,-14.73336 -8.61334,-21.9867 -8.61335,-7.25335 -26.74671,-7.25335 h -43.9734 v -21.76003 h 46.24007 q 17.45336,0 30.37338,6.12001 13.14669,6.12001 20.17336,17.68003 7.25335,11.33335 7.25335,27.20004 0,15.86669 -7.25335,27.4267 -7.02667,11.33335 -20.17336,17.45336 -12.92002,6.12001 -30.37338,6.12001 z m -11.33335,54.40008 V 177.79993 h 23.80004 v 156.40023 z m 200.14717,2.26667 q -20.17336,0 -35.58672,-9.74668 -15.41335,-9.74668 -24.0267,-27.65337 -8.61334,-18.13336 -8.61334,-43.06673 0,-25.16004 8.61334,-43.06673 8.61335,-18.13336 24.0267,-27.65338 15.41336,-9.74668 35.58672,-9.74668 16.09336,0 29.01338,5.66667 12.92002,5.66668 21.76003,16.77336 8.84002,10.88002 12.46669,26.74671 l -23.57337,6.34668 q -3.4,-16.77336 -13.82669,-25.16004 -10.20001,-8.38668 -26.52004,-8.38668 -19.26669,0 -31.05338,15.18669 -11.78668,14.96002 -11.78668,43.2934 0,28.10671 11.78668,43.2934 11.78669,15.18669 31.05338,15.18669 16.77336,0 26.97338,-8.38668 10.20001,-8.61335 14.28002,-25.61338 l 23.57337,6.34668 q -4.08001,16.09336 -13.14669,27.20004 -9.06668,11.10668 -21.9867,16.77336 -12.92002,5.66667 -29.01338,5.66667 z"
+     id="text1"
+     inkscape:label="text1"
+     aria-label="RPC" />
 </svg>
