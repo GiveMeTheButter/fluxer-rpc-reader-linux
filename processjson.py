@@ -1,8 +1,11 @@
 import json
 import subprocess
+import os
+import sys
 from pathlib import Path
 
-clientidPath = Path("clientids.json")
+rootDir = os.path.dirname(sys.argv[0])
+clientidPath = Path(os.path.join(rootDir,"clientids.json"))
 
 if clientidPath.exists() != True:
     print("clientids.json doesn't exist! Created clientids.json for you :)")
@@ -44,7 +47,7 @@ def identifyJson(json):
                 jsone = jsone[:z]
                 return jsone
 
-def generateStatus(j:dict, cid:str, seconds):
+def generateStatus(j:dict, cid:str, seconds, needText:bool=False):
     seconds = seconds
     text = ""
     emoji_name = ""
@@ -82,4 +85,7 @@ def generateStatus(j:dict, cid:str, seconds):
     jsone.get("custom_status")["emoji_name"] = emoji_name
     jsone.get("custom_status")["emoji_animated"] = emoji_animated
     print(jsone)
-    return jsone
+    if(needText==False):
+        return jsone
+    else:
+        return text

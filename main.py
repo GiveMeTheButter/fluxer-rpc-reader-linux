@@ -15,6 +15,9 @@ from PySide6.QtGui import QIcon, QAction
 import rpcreader
 # add other paths later!!!
 
+
+rootDir = os.path.dirname(sys.argv[0])
+
 if sys.platform == "win32":
     raise ValueError("Windows is not currently supported")
 ipcPath = str(os.environ.get("XDG_RUNTIME_DIR")) + "/" + "discord-ipc-0"
@@ -23,8 +26,8 @@ print("Path: " + ipcPath)
 try:
     iconPath = os.path.join(sys._MEIPASS,"ico.svg")
 except:
-    iconPath = Path("ico.svg")
-tokenPath = Path("token.txt")
+    iconPath = os.path.join(rootDir,"ico.svg")
+tokenPath = Path(os.path.join(rootDir,"token.txt"))
 warn = False
 if tokenPath.exists() != True:
     print("token.txt doesn't exist! Created token.txt for you :)")
@@ -43,6 +46,7 @@ menu = QMenu()
 
 action = QAction("Exit")
 action2 = QAction("Change Token")
+action3 = QAction("Edit clientids.json")
 
 def exitApp():
     rpcreader.setStatusNull()
@@ -55,19 +59,23 @@ def tokenWindow():
             tokenP.seek(0)
             tokenP.write(token)
             tokenP.truncate()
+def openClientids():
+    subprocess.call(["xdg-open", "clientids.json"])
         
 action.triggered.connect(exitApp)
 action2.triggered.connect(tokenWindow)
+action3.triggered.connect(openClientids)
 
 menu = QMenu()
 menu.addAction(action)
 menu.addAction(action2)
+menu.addAction(action3)
 tray.setContextMenu(menu)
 
 tray.show()
 
 try:
-    thread3 = threading.Thread(target=rpcreader.startListening, args=(ipcPath,))
+    thread3 = threading.Thread(target=rpcreader.startListening, args=(ipcPath, tray,))
     thread3.daemon = True
     thread3.start()
     if(warn):

@@ -2,14 +2,16 @@ import aiohttp
 import json
 import re
 import sys
+import os
 from pathlib import Path
 #if getattr(sys, "frozen", False):
-rootDir = Path("token.txt")
+rootDir = os.path.dirname(sys.argv[0])
+token = Path(os.path.join(rootDir,"token.txt"))
 #else:
 #    rootDir = Path.joinpath(Path(__file__).resolve().parent, "token.txt")
 
 def getToken():
-    file = open(rootDir, "r")
+    file = open(token, "r")
     return re.sub(r'[\r\n\x00]', '', str(file.read()))
 
 async def setStatus(j:dict):

@@ -23,7 +23,7 @@ def respondHandshake(connection):
     payload = struct.pack("<ii", 1, len(payload)) + payload
     connection.send(payload)
 
-def startListening(ipcPath):
+def startListening(ipcPath, tray):
     soc = socket.socket(socket.AF_UNIX)
 
     try:
@@ -49,7 +49,7 @@ def startListening(ipcPath):
     cid = None
 
     print("Connected with " + str(conn))
-    timah = timer.Timer()
+    timah = timer.Timer(tray)
     thread = threading.Thread(target=timah.timeLoop)
     thread.daemon = True
     thread.start()
@@ -77,9 +77,11 @@ def startListening(ipcPath):
                 if jsonData.get("args").get("activity") != None:
                     timah.setCurrentJsonAndCid(jsonData,cid)
             asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid, timah.getSeconds())))
+            tray.setToolTip(processjson.generateStatus(jsonData, cid, timah.getSeconds(), True))
     asyncio.run(patch.test('null','null'))
+    tray.setToolTip("Fluxer RPC")
     timah.stop()
     del timah
     print("Disconnected, setting status to null.")
     soc.close()
-    startListening(ipcPath)
+    startListening(ipcPath,tray)
