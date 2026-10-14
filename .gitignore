@@ -1,4 +1,7 @@
 # venv and python
+build/
+dist/
+main.spec
 venv/
 __pycache__
 
@@ -12,3 +15,5 @@ test4.py
 # bash scripts
 setupenv.sh
 start.sh
+
+saul.jpg

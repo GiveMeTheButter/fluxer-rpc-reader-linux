@@ -9,85 +9,80 @@ import processjson
 import sys
 import timer
 import threading
+from pathlib import Path
+from PySide6.QtWidgets import QSystemTrayIcon, QMenu, QApplication, QInputDialog
+from PySide6.QtGui import QIcon, QAction
+import rpcreader
 # add other paths later!!!
+
+
+rootDir = os.path.dirname(sys.argv[0])
 
 if sys.platform == "win32":
     raise ValueError("Windows is not currently supported")
 ipcPath = str(os.environ.get("XDG_RUNTIME_DIR")) + "/" + "discord-ipc-0"
 print("Path: " + ipcPath)
 
-def respondHandshake(connection):
-    payload = {
-                    "cmd": "DISPATCH",
-                    "evt": "READY",
-                    "code": "4000"
-                }
-    payload = json.dumps(payload).encode("UTF-8")
-    payload = struct.pack("<ii", 1, len(payload)) + payload
-    connection.send(payload)
-
-def startListening():
-    soc = socket.socket(socket.AF_UNIX)
-
-    try:
-        if os.path.exists(ipcPath):
-            os.unlink(ipcPath)
-        soc.bind((ipcPath))
-
-    except socket.error as message:
-        try:
-            print("Trying to remove and recreate " + str(ipcPath))
-            os.remove(ipcPath)
-            soc.bind((ipcPath))
-        except:   
-            print("Failed to bind. Code: "
-            + str(message.errno) + ", Msg: "
-            + message.strerror
-            )
-
-    soc.listen()
-    asyncio.run(patch.test('null','null'))
-
-    conn, addr = soc.accept()
-    cid = None
-
-    print("Connected with " + str(conn))
-    timah = timer.Timer()
-    thread = threading.Thread(target=timah.timeLoop)
-    thread.daemon = True
-    thread.start()
-    with conn:
-        while True:
-            data = conn.recv(2048)
-            if not data:
-                break
-            decodedData = data.decode("Latin-1")
-            decodedData = processjson.identifyJson(decodedData)
-            decodedData = decodedData.encode("Latin-1")
-            try:
-                decodedData = decodedData.decode("UTF-8")
-            except UnicodeDecodeError:
-                print("Couldn't decode this string: " + str(decodedData))
-                break
-            try:
-                jsonData = json.loads(decodedData)
-            except json.JSONDecodeError as e:
-                break
-            if jsonData.get("v") != None and jsonData.get("client_id") != None:
-                cid = jsonData.get("client_id")
-                respondHandshake(conn)
-            if jsonData.get("args") != None:
-                if jsonData.get("args").get("activity") != None:
-                    timah.setCurrentJsonAndCid(jsonData,cid)
-            asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid, timah.getSeconds())))
-    asyncio.run(patch.test('null','null'))
-    timah.stop()
-    del timah
-    print("Disconnected, setting status to null.")
-    soc.close()
 try:
-    while True:
-        startListening()
+    iconPath = os.path.join(sys._MEIPASS,"ico.svg")
+except:
+    iconPath = os.path.join(rootDir,"ico.svg")
+tokenPath = Path(os.path.join(rootDir,"token.txt"))
+warn = False
+if tokenPath.exists() != True:
+    print("token.txt doesn't exist! Created token.txt for you :)")
+    tokenFile = open(tokenPath, "w")
+    tokenFile.close()
+    warn = True
+
+app = QApplication()
+dialog = QInputDialog()
+QApplication.setQuitOnLastWindowClosed(False)
+
+tray = QSystemTrayIcon()
+tray.setIcon(QIcon(os.path.join(iconPath)))
+tray.setToolTip("Fluxer RPC")
+menu = QMenu()
+
+action = QAction("Exit")
+action2 = QAction("Change Token")
+action3 = QAction("Edit clientids.json")
+
+def exitApp():
+    rpcreader.setStatusNull()
+    print("Exiting app... setting custom status to null.")
+    app.quit()
+def tokenWindow():
+    token, done = QInputDialog.getText(dialog, "Input Token", "Input your token:")
+    if(done):
+        with open(tokenPath,"r+") as tokenP:
+            tokenP.seek(0)
+            tokenP.write(token)
+            tokenP.truncate()
+def openClientids():
+    subprocess.call(["xdg-open", "clientids.json"])
+        
+action.triggered.connect(exitApp)
+action2.triggered.connect(tokenWindow)
+action3.triggered.connect(openClientids)
+
+menu = QMenu()
+menu.addAction(action)
+menu.addAction(action2)
+menu.addAction(action3)
+tray.setContextMenu(menu)
+
+tray.show()
+
+try:
+    thread3 = threading.Thread(target=rpcreader.startListening, args=(ipcPath, tray,))
+    thread3.daemon = True
+    thread3.start()
+    if(warn):
+        tokenWindow()
+    sys.exit(app.exec())
+    #while thread3.:
+     #   thread3.start()
 except KeyboardInterrupt:
-    print("KeyboardInterrupt catched, setting custom status to null.")
-    asyncio.run(patch.test('null','null'))
+    print("KeyboardInterrupt caught, setting custom status to null.")
+    rpcreader.setStatusNull()

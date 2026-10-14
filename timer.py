@@ -4,7 +4,8 @@ import patch
 import processjson
 
 class Timer:
-    def __init__(self):
+    def __init__(self, tray):
+        self._tray = tray
         self.currentTime = None
         self._reset = False
         self._currentJson = None
@@ -13,6 +14,7 @@ class Timer:
     def updateTime(self):
         if self._currentJson != None and self._cid != None and self.currentTime != None:
             j = processjson.generateStatus(self._currentJson, self._cid, self.getSeconds())
+            self._tray.setToolTip(processjson.generateStatus(self._currentJson, self._cid, self.getSeconds(), True))
             asyncio.run(patch.setStatus(j))
 
 
