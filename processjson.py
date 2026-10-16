@@ -10,6 +10,7 @@ clientidPath = Path(os.path.join(rootDir,"clientids.json"))
 if clientidPath.exists() != True:
     print("clientids.json doesn't exist! Created clientids.json for you :)")
     clientidFile = open(clientidPath, "w")
+    clientidFile.write("{\n\n}")
     clientidFile.close()
 
 try:
@@ -17,6 +18,7 @@ try:
         clientids = json.load(file)
 except:
     print("Something went wrong when reading clientids.json, does the file exist and is its content correct?")
+    clientids = json.loads("{ }")
 maxTextLength = 128
 
 def pidToName(pid):
@@ -84,6 +86,7 @@ def generateStatus(j:dict, cid:str, seconds, needText:bool=False):
     jsone.get("custom_status")["text"] = text
     jsone.get("custom_status")["emoji_name"] = emoji_name
     jsone.get("custom_status")["emoji_animated"] = emoji_animated
+    print("Clientid: "+ str(cid))
     print(jsone)
     if(needText==False):
         return jsone
