@@ -16,8 +16,28 @@ def setStatusNull():
 def respondHandshake(connection):
     payload = {
                     "cmd": "DISPATCH",
+                    "data": {
+                        "v": 1,
+                        "config": {
+                            "cdn_host": "cdn.discordapp.com",
+                            "api_endpoint": "//discord.com/api",
+                            "environment": "production"
+                        },
+                        "user": {
+                            "id": "IDDD", 
+                            "username": "USER", 
+                            "discriminator": "0",
+                            "global_name": "XX", 
+                            "avatar": "XX", 
+                            "avatar_decoration_data": None,
+                            "bot": False,
+                            "flags": 288,
+                            "premium_type": 0
+                        }
+                    },
                     "evt": "READY",
-                    "code": "4000"
+                    "code": "4000",
+                    "nonce": None
                 }
     payload = json.dumps(payload).encode("UTF-8")
     payload = struct.pack("<ii", 1, len(payload)) + payload
