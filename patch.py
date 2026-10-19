@@ -16,16 +16,22 @@ def getToken():
 
 async def setStatus(j:dict):
     async with aiohttp.ClientSession("https://api.fluxer.app/v1/", headers={"Authorization": str(getToken())}) as session:
-        async with session.patch("/users/@me/settings", json=j) as response:
-            html = await response.text()
-            if json.loads(html).get("code") == "UNAUTHORIZED":
-                print('Fluxer API responding with code "UNAUTHORIZED", is your token correct?')
-            await session.close()
+        try:
+            async with session.patch("/users/@me/settings", json=j) as response:
+                html = await response.text()
+                if json.loads(html).get("code") == "UNAUTHORIZED":
+                    print('Fluxer API responding with code "UNAUTHORIZED", is your token correct?')
+                await session.close()
+        except aiohttp.client_exceptions.ClientConnectorDNSError:
+            print("Cannot connect to Fluxer API, there might be no internet connection.")
 
 async def test(text, emoji):
     j = json.loads('{"custom_status":{"text":' + text + ',"emoji_name":' + emoji + ',"emoji_animated":false}}')
     async with aiohttp.ClientSession("https://api.fluxer.app/v1/", headers={"Authorization": str(getToken())}) as session:
-        async with session.patch("/users/@me/settings", json=j) as response:
-            html = await response.text()
-            #print(html)
-            await session.close()
+        try:
+            async with session.patch("/users/@me/settings", json=j) as response:
+                html = await response.text()
+                #print(html)
+                await session.close()
+        except aiohttp.client_exceptions.ClientConnectorDNSError:
+            print("Cannot connect to Fluxer API, there might be no internet connection.")
