@@ -17,6 +17,7 @@ import rpcreader
 
 
 rootDir = os.path.dirname(sys.argv[0])
+savedStatus = None
 
 if sys.platform == "win32":
     raise ValueError("Windows is not currently supported")
@@ -47,18 +48,38 @@ menu = QMenu()
 action = QAction("Exit")
 action2 = QAction("Change Token")
 action3 = QAction("Edit clientids.json")
-
+def getSavedStatus():
+    global savedStatus
+    return savedStatus
+def setSavedStatus(statuse):
+    global savedStatus
+    savedStatus = statuse
 def exitApp():
-    rpcreader.setStatusNull()
+    if(getSavedStatus() == None):
+        rpcreader.setStatusNull()
+    else:
+        jsn = {
+            "custom_status": ""
+        }
+        jsn["custom_status"] = getSavedStatus()
+        asyncio.run(patch.setStatus(jsn))
     print("Exiting app... setting custom status to null.")
     app.quit()
 def tokenWindow():
     token, done = QInputDialog.getText(dialog, "Input Token", "Input your token:")
     if(done):
+        if(getSavedStatus() != None):
+            jsn = {
+            "custom_status": ""
+            }
+            jsn["custom_status"] = getSavedStatus()
+            asyncio.run(patch.setStatus(jsn))
         with open(tokenPath,"r+") as tokenP:
             tokenP.seek(0)
             tokenP.write(token)
             tokenP.truncate()
+        setSavedStatus(asyncio.run(patch.getStatus()))
+        asyncio.run(patch.setStatusString())
 def openClientids():
     subprocess.call(["xdg-open", "clientids.json"])
         
@@ -75,14 +96,13 @@ tray.setContextMenu(menu)
 tray.show()
 
 try:
+    setSavedStatus(asyncio.run(patch.getStatus()))
     thread3 = threading.Thread(target=rpcreader.startListening, args=(ipcPath, tray,))
     thread3.daemon = True
     thread3.start()
     if(warn):
         tokenWindow()
     sys.exit(app.exec())
-    #while thread3.:
-     #   thread3.start()
 except KeyboardInterrupt:
     print("KeyboardInterrupt caught, setting custom status to null.")
     rpcreader.setStatusNull()

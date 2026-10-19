@@ -11,7 +11,7 @@ import timer
 import threading
 
 def setStatusNull():
-    asyncio.run(patch.test("null","null"))
+    asyncio.run(patch.setStatusString())
 
 def respondHandshake(connection):
     payload = {
@@ -63,7 +63,7 @@ def startListening(ipcPath, tray):
             )
 
     soc.listen()
-    asyncio.run(patch.test('null','null'))
+    asyncio.run(patch.setStatusString())
 
     conn, addr = soc.accept()
     cid = None
@@ -98,7 +98,7 @@ def startListening(ipcPath, tray):
                     timah.setCurrentJsonAndCid(jsonData,cid)
             asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid, timah.getSeconds())))
             tray.setToolTip(processjson.generateStatus(jsonData, cid, timah.getSeconds(), True))
-    asyncio.run(patch.test('null','null'))
+    asyncio.run(patch.setStatusString())
     tray.setToolTip("Fluxer RPC")
     timah.stop()
     del timah
