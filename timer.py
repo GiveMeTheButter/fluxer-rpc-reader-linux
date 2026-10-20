@@ -2,6 +2,7 @@ import time
 import asyncio
 import patch
 import processjson
+import globalVars
 
 class Timer:
     def __init__(self, tray):
@@ -9,11 +10,22 @@ class Timer:
         self.currentTime = None
         self._reset = False
         self._currentJson = None
+        self._lastJson = None
         self._cid = None
+
+    def getLastJson(self):
+        return self._lastJson
 
     def updateTime(self):
         if self._currentJson != None and self._cid != None and self.currentTime != None:
             j = processjson.generateStatus(self._currentJson, self._cid, self.getSeconds())
+            if(self._lastJson != None):
+                jason = {"custom_status":""}
+                jason["custom_status"] = asyncio.run(patch.getStatus())
+                if(self._lastJson != jason):
+                    globalVars.savedStatus = {"custom_status":""}
+                    globalVars.savedStatus["custom_status"] = asyncio.run(patch.getStatus())
+            self._lastJson = j
             self._tray.setToolTip(processjson.generateStatus(self._currentJson, self._cid, self.getSeconds(), True))
             asyncio.run(patch.setStatus(j))
 

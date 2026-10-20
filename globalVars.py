@@ -1,0 +1,2 @@
+global savedStatus
+savedStatus = None

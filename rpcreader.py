@@ -9,6 +9,7 @@ import processjson
 import sys
 import timer
 import threading
+import globalVars
 
 def setStatusNull():
     asyncio.run(patch.setStatusString())
@@ -63,10 +64,18 @@ def startListening(ipcPath, tray):
             )
 
     soc.listen()
-    asyncio.run(patch.setStatusString())
+
+    globalVars.savedStatus = {"custom_status":""}
+    globalVars.savedStatus["custom_status"] = asyncio.run(patch.getStatus())
+    if globalVars.savedStatus != None:
+        asyncio.run(patch.setStatus(globalVars.savedStatus))
+    else:
+        asyncio.run(patch.setStatusString())
 
     conn, addr = soc.accept()
     cid = None
+
+    lastJson = None
 
     print("Connected with " + str(conn))
     timah = timer.Timer(tray)
@@ -74,6 +83,8 @@ def startListening(ipcPath, tray):
     thread.daemon = True
     thread.start()
     with conn:
+        globalVars.savedStatus = {"custom_status":""}
+        globalVars.savedStatus["custom_status"] = asyncio.run(patch.getStatus())
         while True:
             data = conn.recv(2048)
             if not data:
@@ -96,9 +107,24 @@ def startListening(ipcPath, tray):
             if jsonData.get("args") != None:
                 if jsonData.get("args").get("activity") != None:
                     timah.setCurrentJsonAndCid(jsonData,cid)
+            if(lastJson != None):
+                jason = {"custom_status":""}
+                jason["custom_status"] = asyncio.run(patch.getStatus())
+                if(timah.getLastJson() != None):
+                    if(timah.getLastJson() != jason):
+                        globalVars.savedStatus = {"custom_status":""}
+                        globalVars.savedStatus["custom_status"] = asyncio.run(patch.getStatus())
+                else:
+                    if(lastJson != jason):
+                        globalVars.savedStatus = {"custom_status":""}
+                        globalVars.savedStatus["custom_status"] = asyncio.run(patch.getStatus())
             asyncio.run(patch.setStatus(processjson.generateStatus(jsonData, cid, timah.getSeconds())))
+            lastJson = processjson.generateStatus(jsonData, cid, timah.getSeconds())
             tray.setToolTip(processjson.generateStatus(jsonData, cid, timah.getSeconds(), True))
-    asyncio.run(patch.setStatusString())
+    if globalVars.savedStatus != None:
+        asyncio.run(patch.setStatus(globalVars.savedStatus))
+    else:
+        asyncio.run(patch.setStatusString())
     tray.setToolTip("Fluxer RPC")
     timah.stop()
     del timah
